@@ -42,7 +42,7 @@ var searchController=TextEditingController();
 
                 ),
               ),
-              Expanded(child: articleBuilder(list, context,_width,isSearch: true)),
+              Expanded(child: articleBuilder(list, context,isSearch: true)),
             ],
           ),
         );

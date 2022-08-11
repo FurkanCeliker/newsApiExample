@@ -42,9 +42,9 @@ Widget defaultFormField({
       ),
     );
 
-Widget divider(double width) => Padding(
+Widget divider() => Padding(
       
-      padding:  EdgeInsets.symmetric(horizontal: width*0.02),
+      padding: const EdgeInsets.symmetric(horizontal: 20.0),
       child: Container(
         width: double.infinity,
         height: 1.0,
@@ -106,12 +106,12 @@ Widget buildArticleItem(article, context) => InkWell(
       ),
     );
 
-Widget articleBuilder(list, context,width,{isSearch=false}) => ConditionalBuilder(
+Widget articleBuilder(list, context,{isSearch=false}) => ConditionalBuilder(
       condition: list.length > 0,
       builder: (context) => ListView.separated(
         physics: const BouncingScrollPhysics(),
         itemBuilder: (context, index) => buildArticleItem(list[index], context),
-        separatorBuilder: (context, index) => divider(width),
+        separatorBuilder: (context, index) => divider(),
         itemCount: list.length,
       ),
       fallback: (context) =>isSearch? Container() : const Center(child: CircularProgressIndicator()),

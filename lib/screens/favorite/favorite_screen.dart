@@ -14,7 +14,7 @@ class FavoriteScreen extends StatelessWidget {
     return  BlocConsumer<NewsCubit,NewsStatus>
     (builder: (context, state) {
       var list = NewsCubit.get(context).news;
-      return articleBuilder(list, context,_width);
+      return articleBuilder(list, context);
     }, listener: (context, state) {
       
       

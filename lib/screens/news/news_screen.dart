@@ -13,7 +13,7 @@ class NewsScreen extends StatelessWidget {
       listener: (BuildContext context, state) {  },
       builder: (BuildContext context, state) {
         var list=NewsCubit.get(context).news;
-        return  articleBuilder(list,context,_width);
+        return  articleBuilder(list,context);
       },
 
     );
