@@ -1,9 +1,11 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:nws2/model/boxes.dart';
+import 'package:nws2/model/hive_model.dart';
 import 'package:nws2/screens/favorite/favorite_screen.dart';
 import 'package:nws2/shared/components/cubit/status.dart';
 import '../../../screens/news/news_screen.dart';
-import '../../network/remote/api_helper.dart';
+import '../../core/api_helper.dart';
 class NewsCubit extends Cubit<NewsStatus> {
   NewsCubit() : super(NewsInitialState());
   static NewsCubit get(context) => BlocProvider.of(context);
@@ -53,8 +55,8 @@ if(index==0)getNews();
       ApiHelper.getData(
         url: 'v2/everything',
         query: {
-          'q':'besiktas',
-          'apiKey':'353ef2e0f1eb4544877e8dccc3487881',
+          'q':'fenerbahçe',
+          'apiKey':'e2b99e3173194a93b24d2aa638fc15c0',
         },
       ).then((value) {
         news= value.data['articles'];
@@ -70,7 +72,12 @@ if(index==0)getNews();
   }
 
 
-  
+  List<FavoriteNews> favoriteNews=[];
+
+  Future addFavorite(String title,String author,String url,String urlToImage,String description,String content,String publishedAt) async{
+    final favorite= FavoriteNews()..author=author..content=content..description=description..publishedAt=publishedAt..title=title..url=url..urlToImage=urlToImage;
+    final box = Boxes.getFavorites();
+  }
 
 
   List<dynamic>search=[];
@@ -84,7 +91,7 @@ if(index==0)getNews();
 
         'q':'$value',
 
-        'apiKey':'353ef2e0f1eb4544877e8dccc3487881',
+        'apiKey':'e2b99e3173194a93b24d2aa638fc15c0',
       },
     ).then((value) {
       search= value.data['articles'];
@@ -95,8 +102,11 @@ if(index==0)getNews();
     });
   }
   
+bool isFavorite=false;
+List<Map<String,dynamic>> favorites=[];
+void getFavorites(){
 
-
+}
   
 
 }

@@ -29,11 +29,10 @@ var searchController=TextEditingController();
             children: [
               Padding(
                 padding: EdgeInsets.all(_height*0.02),
-                child: defaultFormField(
+                child: searchFormField(
                   controller: searchController,
                   type: TextInputType.text,
                   onValidate: onValidateSearch,
-                  label:'Search',
                   prefix: Icons.search,
                   onChanged: (value) {
                     onChangedValue(value,context);
@@ -53,7 +52,7 @@ var searchController=TextEditingController();
 }
 String? onValidateSearch(String? text) {
   if (text == null || text.isEmpty) {
-    return 'Search can\'t be empty';
+    return '';
   }
   return null;
 }

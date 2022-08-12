@@ -2,8 +2,9 @@ import 'package:conditional_builder_null_safety/conditional_builder_null_safety.
 import 'package:flutter/material.dart';
 import 'package:nws2/screens/new_detail/new_detail_screen.dart';
 import 'package:nws2/shared/components/constants.dart';
+import 'package:flutter_share/flutter_share.dart';
 
-Widget defaultFormField({
+Widget searchFormField({
   required TextEditingController controller,
   required TextInputType type,
   Function? onSubmit,
@@ -11,7 +12,6 @@ Widget defaultFormField({
   VoidCallback? onTap,
   required FormFieldValidator<String>? onValidate,
   VoidCallback? suffixPressed,
-  required String label,
   required IconData prefix,
   bool isPassword = false,
   IconData? suffix,
@@ -28,7 +28,6 @@ Widget defaultFormField({
       onTap: onTap,
       validator: onValidate,
       decoration: InputDecoration(
-        labelText: label,
         prefixIcon: Icon(
           prefix,
         ),
@@ -52,7 +51,13 @@ Widget divider() => Padding(
       ),
     );
 
-
+Future<void> share(String newsSourceUrl) async {
+    await FlutterShare.share(
+      title: 'New Share',
+      linkUrl: newsSourceUrl,
+      chooserTitle: 'News Share',
+    );
+  }
 
 Widget buildArticleItem(article, context) => InkWell(
       onTap: () {
@@ -106,6 +111,7 @@ Widget buildArticleItem(article, context) => InkWell(
       ),
     );
 
+
 Widget articleBuilder(list, context,{isSearch=false}) => ConditionalBuilder(
       condition: list.length > 0,
       builder: (context) => ListView.separated(
@@ -115,6 +121,18 @@ Widget articleBuilder(list, context,{isSearch=false}) => ConditionalBuilder(
         itemCount: list.length,
       ),
       fallback: (context) =>isSearch? Container() : const Center(child: CircularProgressIndicator()),
+    );
+    
+  
+Widget favoriteBuilder(list, context,{isSearch=false}) => ConditionalBuilder(
+      condition: list.length > 0,
+      builder: (context) => ListView.separated(
+        physics: const BouncingScrollPhysics(),
+        itemBuilder: (context, index) => buildArticleItem(list[index], context),
+        separatorBuilder: (context, index) => divider(),
+        itemCount: list.length,
+      ),
+      fallback: (context) =>isSearch? Container() : const Center(child: Text('Your favorites are empty')),
     );
 
 void navigate(context, widget) => Navigator.push(

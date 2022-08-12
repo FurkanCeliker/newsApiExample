@@ -5,7 +5,7 @@ import 'package:nws2/shared/components/cubit/cubit.dart';
 import 'package:nws2/shared/components/cubit/status.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
-import '../../shared/components/constants.dart';
+import '../shared/components/constants.dart';
 class NewsView extends StatelessWidget {
   @override
   Widget build(BuildContext context) {

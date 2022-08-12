@@ -1,9 +1,15 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:nws2/model/boxes.dart';
+import 'package:nws2/model/hive_model.dart';
 import 'package:nws2/screens/WebView/web_view_screen.dart';
 import 'package:nws2/shared/components/components.dart';
+import 'package:nws2/shared/components/cubit/cubit.dart';
+import 'package:nws2/shared/components/cubit/status.dart';
 import '../../shared/components/constants.dart';
+import 'package:flutter_share/flutter_share.dart';
 
-class NewDetailScreen extends StatelessWidget {
+class NewDetailScreen extends StatefulWidget {
   final String? title;
   final String? img;
   final String? detail;
@@ -19,23 +25,67 @@ class NewDetailScreen extends StatelessWidget {
       required this.newsSourceUrl});
 
   @override
+  State<NewDetailScreen> createState() => _NewDetailScreenState();
+}
+
+class _NewDetailScreenState extends State<NewDetailScreen> {
+  @override
+  void dispose() {
+    super.dispose();
+  }
+
+  @override
   Widget build(BuildContext context) {
     double _height = Constants.getHeight(context);
     double _width = Constants.getWidth(context);
-    return buildNewsDetailPage(_width, _height, context);
+    return BlocConsumer<NewsCubit, NewsStatus>(
+      builder: (context, state) {
+        return buildNewsDetailPage(_width, _height, context);
+      },
+      listener: (context, state) {},
+    );
   }
 
   Scaffold buildNewsDetailPage(
       double _width, double _height, BuildContext context) {
     return Scaffold(
       appBar: AppBar(
+        actions: [
+          IconButton(
+              onPressed: () {
+                List<Map<String, dynamic>> favorites =
+                    NewsCubit.get(context).favorites;
+                Map<String, dynamic> item = {
+                  'title': widget.title,
+                  'author': widget.author,
+                  'description': widget.detail,
+                  'urlToImage': widget.img,
+                  'publishedAt': widget.date,
+                  'url': widget.newsSourceUrl
+                };
+                if (!favorites.contains(item)) {
+                  favorites.add(item);
+                } else {
+                  favorites.remove(item);
+                }
+              },
+              icon: Icon(
+                Icons.favorite_outline,
+                size: 30,
+              )),
+          IconButton(
+              onPressed: () {
+                share(widget.newsSourceUrl.toString());
+              },
+              icon: Icon(Icons.share)),
+        ],
         title: Text(Constants.getDetailPageAppTitle()),
       ),
       body: SingleChildScrollView(
         child: Column(
           children: [
             Image.network(
-              img ?? Constants.getStaticNewsDetailImage(),
+              widget.img ?? Constants.getStaticNewsDetailImage(),
               width: _width,
               height: _height * 0.4,
             ),
@@ -43,7 +93,7 @@ class NewDetailScreen extends StatelessWidget {
               height: _height * 0.05,
             ),
             Text(
-              title ?? '',
+              widget.title ?? '',
               style: Constants.getDetailPageTitleStyle(),
             ),
             SizedBox(
@@ -59,7 +109,7 @@ class NewDetailScreen extends StatelessWidget {
                       Icon(Icons.person),
                       Expanded(
                           child: Text(
-                        author ?? '',
+                        widget.author ?? '',
                         maxLines: 1,
                         overflow: TextOverflow.ellipsis,
                       )),
@@ -75,7 +125,7 @@ class NewDetailScreen extends StatelessWidget {
                       mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                       children: [
                         Icon(Icons.date_range),
-                        Text(date ?? ''),
+                        Text(widget.date ?? ''),
                       ]),
                   width: _width * 0.5,
                   height: _height * 0.05,
@@ -87,36 +137,17 @@ class NewDetailScreen extends StatelessWidget {
             SizedBox(
               height: _height * 0.05,
             ),
-            Text(detail ?? ''),
+            Text(widget.detail ?? ''),
             SizedBox(
               height: _height * 0.05,
             ),
-            Row(mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+            Row(
+              mainAxisAlignment: MainAxisAlignment.spaceEvenly,
               children: [
-
                 TextButton(
                     onPressed: () {
-                      navigate(context, WebViewScreen(newsSourceUrl ?? ''));
-                    },
-                    child: Row(
-                      mainAxisAlignment: MainAxisAlignment.center,
-                      children: [
-                        Icon(
-                          Icons.share,
-                          color: Colors.black,
-                        ),
-                        SizedBox(width: _width*0.02,),
-                        Text(
-                          Constants.getShareButtonText(),
-                          style: Constants.getWebViewButtonTextStyle(),
-                        ),
-                        
-                      ],
-                    )),
-
-                TextButton(
-                    onPressed: () {
-                      navigate(context, WebViewScreen(newsSourceUrl ?? ''));
+                      navigate(
+                          context, WebViewScreen(widget.newsSourceUrl ?? ''));
                     },
                     child: Row(
                       mainAxisAlignment: MainAxisAlignment.center,
@@ -125,12 +156,13 @@ class NewDetailScreen extends StatelessWidget {
                           Icons.web,
                           color: Colors.black,
                         ),
-                        SizedBox(width: _width*0.02,),
+                        SizedBox(
+                          width: _width * 0.02,
+                        ),
                         Text(
                           Constants.getWebViewButtonText(),
                           style: Constants.getWebViewButtonTextStyle(),
                         ),
-                        
                       ],
                     )),
               ],
@@ -139,5 +171,19 @@ class NewDetailScreen extends StatelessWidget {
         ),
       ),
     );
+  }
+
+  Future<void> _addFavorite(String title, String author, String description,
+      String newsSourceUrl, String urlToImage, String publishedAt) {
+    final favorites = FavoriteNews()
+      ..author = author
+      ..description = description = newsSourceUrl = newsSourceUrl
+      ..publishedAt = publishedAt
+      ..urlToImage = urlToImage
+      ..content = 'asd';
+    final box = Boxes.getFavorites();
+    box.add(favorites);
+   return box.add(favorites);
+   
   }
 }

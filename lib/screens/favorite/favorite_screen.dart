@@ -13,8 +13,8 @@ class FavoriteScreen extends StatelessWidget {
     double _width = Constants.getWidth(context);
     return  BlocConsumer<NewsCubit,NewsStatus>
     (builder: (context, state) {
-      var list = NewsCubit.get(context).news;
-      return articleBuilder(list, context);
+      var list = NewsCubit.get(context).favorites;
+      return favoriteBuilder(list, context);
     }, listener: (context, state) {
       
       
